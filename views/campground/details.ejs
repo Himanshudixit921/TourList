@@ -142,7 +142,7 @@
         </div>
     </div>
     <script>
-        maptilersdk.config.apiKey = "F8xz9g7jnXJxCZSRFa8u";
+        maptilersdk.config.apiKey = `<%- process.env.MAP_API_KEY %>`;
         const map = new maptilersdk.Map({
             container: "map",
             style: "https://api.maptiler.com/maps/satellite/style.json?key=" + maptilersdk.config.apiKey,

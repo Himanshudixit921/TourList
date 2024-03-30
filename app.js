@@ -42,10 +42,10 @@ const store = MongoStore.create({
   },
 });
 store.on("error", function (e) {
-  console.log("Session ", e);
+  console.log(e);
 });
 const sessionConf = {
-  store: store,
+  store,
   name: "session",
   secret: "password",
   resave: "false",
@@ -87,7 +87,6 @@ app.use((err, req, res, next) => {
   console.log(err);
   res.status(statusCode).render("error", { err });
 });
-const port = process.env.port || 3000;
-app.listen(port, () => {
+app.listen(3000, () => {
   console.log("connected");
 });

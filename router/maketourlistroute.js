@@ -29,10 +29,6 @@ const isOwner = async (req, res, next) => {
 }
 router.get('/', wrapAsync(index));
 router.post('/', loginValidation, upload.array('image'), validateTourList, wrapAsync(newPlace));
-// router.post('/', upload.array('image'), (req, res) => {
-//     console.log(req.body, req.files);
-//     res.send("It worked");
-// })
 router.get('/new', loginValidation, showNew)
 router.get('/:id', wrapAsync(show))
 router.get('/:id/edit', loginValidation, isOwner, wrapAsync(edit))

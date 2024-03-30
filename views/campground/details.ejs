@@ -1,16 +1,45 @@
 <% layout('layout/boilerplate')%>
+    <style>
+        #menu {
+            position: absolute;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+            z-index: 99;
+            background-color: rgb(58, 49, 49);
+            color: white;
+        }
+
+        .max-height {
+            max-height: 400px;
+        }
+    </style>
     <div class="row">
+
         <div class="col-6">
             <div class="card mb-3">
-                <div id="carouselExampleSlidesOnly" class="carousel slide carousel-fade" data-bs-ride="carousel"
+
+                <div id="carouselExampleAutoplaying" class="carousel slide carousel-fade" data-bs-ride="carousel"
                     data-bs-interval="3000">
                     <div class="carousel-inner">
                         <% foundPlace.image.forEach((i, idx)=> { %>
-                            <div class="carousel-item <%= (idx == 0) ? " active" : "" %>">
-                                <img alt="none" src="<%=i.url %>" class="d-block w-100" alt="NOT Found">
+                            <div class="carousel-item  <%= (idx == 0) ? " active " : "" %>">
+                                <img alt="none" src="<%=i.url %>" class="max-height d-block w-100" alt="NOT Found">
                             </div>
                             <% }) %>
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">
@@ -38,59 +67,104 @@
             </div>
 
         </div>
-        <% if(user) { %>
-            <div class="col-6">
-                <form class="needs-validation" action="/maketourList/<%= foundPlace.id %>/reviews" method="POST"
-                    novalidate>
-                    <fieldset class="starability-heartbeat">
-                        <h5>Rate this Place <%= user.username %>
-                        </h5>
-                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked
-                            aria-label="No rating." />
-                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                        <label for="first-rate1" title="Terrible">1 star</label>
-                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                        <label for="first-rate2" title="Not good">2 stars</label>
-                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                        <label for="first-rate3" title="Average">3 stars</label>
-                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                        <label for="first-rate4" title="Very good">4 stars</label>
-                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                        <label for="first-rate5" title="Amazing">5 stars</label>
-                    </fieldset>
-                    <div class="mb-3">
-                        <label class="form-label mt-3" for="body"> Review </label>
-                        <textarea class="form-control" name="review[body]" id="" cols="30" rows="4" required></textarea>
-                    </div>
-                    <button class="mb-3 btn btn-info"> Submit</button>
-                </form>
-                <% for(let review of foundPlace.reviews) {%>
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <p class="starability-result" data-rating=<%=review.rating %>>
-                                Rated: 3 stars
-                            </p>
-                            <h6 class="card-subtitle text-muted mb-3"> Submitted by - <%= review.owner.username %>
-                            </h6>
-                            <p class="card-text">
-                                <%= review.body %>
-                            </p>
-                            <% if(user && review.owner.equals(user._id)) { %>
-                                <form
-                                    action="/maketourList/<%= foundPlace._id %>/reviews/<%= review._id %>?_method=DELETE"
-                                    method="POST">
-                                    <button class="btn btn-sm btn-danger">
-                                        Delete
-                                    </button>
-                                </form>
-                                <% } %>
+        <div class="col-6">
+            <div id="map">
+                <div id="menu">
+                    <input id="satellite" type="radio" name="rtoggle" value="satellite" checked="checked">
+                    <label for="satellite">satellite streets</label>
+                    <input id="basic-v2-light" type="radio" name="rtoggle" value="light">
+                    <label for="basic-v2-light">light</label>
+                    <input id="basic-v2-dark" type="radio" name="rtoggle" value="dark">
+                    <label for="basic-v2-dark">dark</label>
+                    <input id="streets-v2" type="radio" name="rtoggle" value="streets">
+                    <label for="streets-v2">streets</label>
+                    <input id="outdoor" type="radio" name="rtoggle" value="outdoors">
+                    <label for="outdoor">outdoors</label>
+                </div>
+            </div>
+            <% if(user) { %>
+                <div class="col-6">
+                    <form class="needs-validation" action="/maketourList/<%= foundPlace.id %>/reviews" method="POST"
+                        novalidate>
+                        <fieldset class="starability-heartbeat">
+                            <h5>Rate this Place <%= user.username %>
+                            </h5>
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0"
+                                checked aria-label="No rating." />
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                            <label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                            <label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                            <label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                            <label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                            <label for="first-rate5" title="Amazing">5 stars</label>
+                        </fieldset>
+                        <div class="mb-3">
+                            <label class="form-label mt-3" for="body"> Review </label>
+                            <textarea class="form-control" name="review[body]" id="" cols="30" rows="4"
+                                required></textarea>
                         </div>
+                        <button class="mb-3 btn btn-info"> Submit</button>
+                    </form>
+                    <% for(let review of foundPlace.reviews) {%>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p class="starability-result" data-rating=<%=review.rating %>>
+                                    Rated: 3 stars
+                                </p>
+                                <h6 class="card-subtitle text-muted mb-3"> Submitted by - <%= review.owner.username %>
+                                </h6>
+                                <p class="card-text">
+                                    <%= review.body %>
+                                </p>
+                                <% if(user && review.owner.equals(user._id)) { %>
+                                    <form
+                                        action="/maketourList/<%= foundPlace._id %>/reviews/<%= review._id %>?_method=DELETE"
+                                        method="POST">
+                                        <button class="btn btn-sm btn-danger">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <% } %>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+                <% } else {%>
+                    <div class="mb-3 col-6">
+                        <h5 class="muted"> You need to login / register first to see or upload any kind of reviews</h5>
                     </div>
                     <% } %>
-            </div>
-            <% } else {%>
-                <div class="mb-3 col-6">
-                    <h5 class="muted"> You need to login / register first to see or upload any kind of reviews</h5>
-                </div>
-                <% } %>
+        </div>
     </div>
+    <script>
+        maptilersdk.config.apiKey = "F8xz9g7jnXJxCZSRFa8u";
+        const map = new maptilersdk.Map({
+            container: "map",
+            style: "https://api.maptiler.com/maps/satellite/style.json?key=" + maptilersdk.config.apiKey,
+            center: [<%=foundPlace.geometry.coordinates %>],
+            zoom: 7,
+        });
+        const layerList = document.getElementById('menu');
+        const inputs = layerList.getElementsByTagName('input');
+        const pop = `<%= foundPlace.title%>`;
+        const marker = new maptilersdk.Marker()
+            .setLngLat([<%=foundPlace.geometry.coordinates %>])
+            .setPopup(
+                new maptilersdk.Popup({ offset: 25 })
+                    .setHTML(
+                        `<h3>${pop}</h3>`
+                    )
+            )
+            .addTo(map);
+        for (const input of inputs) {
+            input.onclick = (layer) => {
+                const layerId = layer.target.id;
+                map.setStyle("https://api.maptiler.com/maps/" + layerId + "/style.json?key=" + maptilersdk.config.apiKey);
+            };
+        }
+
+    </script>

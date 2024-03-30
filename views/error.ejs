@@ -8,8 +8,11 @@
         </svg>
         <div>
             <div>
-                <%= err.stack %>
-                    <%= err.message %>
+                <%= err.message %>
+
+                    <% if (process.env.NODE_ENV !== "production" ){ %>
+                        <%= err.stack %>
+                            <% } %>
             </div>
         </div>
     </div>

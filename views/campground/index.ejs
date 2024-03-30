@@ -1,13 +1,14 @@
 <% layout('layout/boilerplate')%>
-    <h1 class="mb-3">All tourist places</h1>
+    <div id="map"></div>
+    <h1 class="mb-5">Explore !!!</h1>
     <% for(let campground of campgrounds) { %>
-        <div class="card mb-2">
+        <div class="card mb-5">
             <div class="row">
                 <div class="col-md-7">
-                    <img class="img-fluid" alt="" src="<%=(campground.image.length) ? campground.image[0].url : ""%>">
+                    <img class="img-fluid img-thumbnail max-img-size" alt="" src="<%=(campground.image.length) ? campground.image[0].url : ""%>">
                 </div>
                 <div class="col-md-5">
-                    <div class="card-body">
+                    <div class="card-body ">
                         <h5 class="card-title">
                             <%= campground.title %>
                         </h5>
@@ -25,3 +26,8 @@
             </div>
         </div>
         <% } %>
+            <script>
+                maptilersdk.config.apiKey = "F8xz9g7jnXJxCZSRFa8u";
+                const campground  = {features: <%- JSON.stringify(campgrounds)%> }
+            </script>
+            <script src="/scripts/mapscript.js"></script>

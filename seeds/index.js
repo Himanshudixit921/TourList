@@ -4,9 +4,11 @@ const cities = require("./cities");
 const Campground = require("../models/tourList");
 const app = express();
 const { places, descriptors } = require("./seederHelper");
+const db_url =
+  "mongodb+srv://himanshudixit921:R9tEZ1dFchu9MnRf@cluster0.4jvatox.mongodb.net/";
 const axios = require("axios");
 mongoose
-  .connect("mongodb://127.0.0.1:27017/tour-list")
+  .connect(db_url)
   .then(() => {
     console.log("Database connected");
   })
@@ -47,7 +49,12 @@ const seedDB = async () => {
         ],
       },
       price: price,
-      owner: "65d35e270fc25478e764d79f",
+      owner: {
+        _id: "6607e93837f5d417e62d55dc",
+        email: "test@gmail.com",
+        username: "test",
+        __v: 0,
+      },
     });
     await camp.save();
   }

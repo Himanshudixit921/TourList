@@ -21,7 +21,7 @@ const db_url = process.env.DB_URL;
 
 mongoose
   // mongodb://127.0.0.1:27017/tour-list
-  .connect(`mongodb://127.0.0.1:27017/tour-list`)
+  .connect(db_url)
   .then(() => {
     console.log("Database connected");
   })
@@ -35,7 +35,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(flash());
 const store = MongoStore.create({
-  mongoUrl: "mongodb://127.0.0.1:27017/tour-list",
+  mongoUrl: db_url,
   touchAfter: 24 * 60 * 60,
   crypto: {
     secret: "Secret!!",
@@ -52,7 +52,7 @@ const sessionConf = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    // secure: true,
+    secure: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -87,6 +87,7 @@ app.use((err, req, res, next) => {
   console.log(err);
   res.status(statusCode).render("error", { err });
 });
-app.listen(3000, () => {
+const port = process.env.port || 3000;
+app.listen(port, () => {
   console.log("connected");
 });
